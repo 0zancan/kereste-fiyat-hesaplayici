@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#8d5a26" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Kereste" />
+    <meta name="description" content="Kereste fiyat hesaplayıcı" />
+    <title>Kereste Sipariş Yönetimi</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icon-192.png" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Kereste işlerinde</p>
+          <h1>Fiyat Yönetimi</h1>
+        </div>
+        <button id="themeToggle" class="theme-btn" type="button" aria-label="Tema değiştir">☀️</button>
+      </header>
+
+      <nav class="tab-bar" aria-label="Ana menü">
+        <button class="tab is-active" type="button" data-tab="calculator">Hesapla</button>
+        <button class="tab" type="button" data-tab="cart">Sepet</button>
+        <button class="tab" type="button" data-tab="project">Proje</button>
+        <button class="tab" type="button" data-tab="settings">Ayarlar</button>
+        <button class="tab" type="button" data-tab="m3">M3</button>
+      </nav>
+
+      <main class="content">
+        <section id="calculatorView" class="view is-active">
+          <div class="panel">
+            <div class="section-header">
+              <h2>Ölçü seçimi</h2>
+              <span id="packageBadge" class="badge">Varsayılan firma</span>
+            </div>
+
+            <div class="standard-grid" id="standardGrid"></div>
+
+            <div class="field-grid">
+              <label>
+                <span>En (cm)</span>
+                <input id="widthInput" type="number" min="1" value="10" />
+              </label>
+              <label>
+                <span>Boy (cm)</span>
+                <input id="heightInput" type="number" min="1" value="10" />
+              </label>
+            </div>
+
+            <div class="field-grid">
+              <label>
+                <span>Boy / Uzunluk</span>
+                <select id="lengthSelect">
+                  <option value="1">1 metre</option>
+                  <option value="2" selected>2 metre</option>
+                  <option value="2.5">2.5 metre</option>
+                  <option value="3">3 metre</option>
+                  <option value="4">4 metre</option>
+                  <option value="5">5 metre</option>
+                  <option value="6">6 metre</option>
+                </select>
+              </label>
+              <label>
+                <span>Adet</span>
+                <input id="qtyInput" type="number" min="1" value="1" />
+              </label>
+            </div>
+
+            <div class="mode-bar">
+              <span>Hesaplama modu</span>
+              <div class="segmented-control">
+                <button class="mode-btn is-active" data-mode="auto" type="button">Otomatik</button>
+                <button class="mode-btn" data-mode="manual" type="button">Manuel</button>
+              </div>
+            </div>
+
+            <div class="preview-box">
+              <div class="preview-image-wrap">
+                <img id="previewImage" alt="Kereste görseli" />
+              </div>
+              <div class="preview-meta">
+                <strong id="previewName">10x10 cm / 2 m</strong>
+                <span id="previewPrice">1 adet fiyat: 225 TL / adet</span>
+              </div>
+            </div>
+
+            <button id="addToCartBtn" class="primary-btn" type="button">Sepete ekle</button>
+          </div>
+        </section>
+
+        <section id="m3View" class="view">
+          <div class="panel">
+            <div class="section-header">
+              <h2>M3 hesaplayıcı</h2>
+              <span id="m3RateBadge" class="badge">Varsayılan fiyat</span>
+            </div>
+
+            <div class="field-grid">
+              <label>
+                <span>En (cm)</span>
+                <input id="m3WidthInput" type="number" min="1" value="10" />
+              </label>
+              <label>
+                <span>Boy (cm)</span>
+                <input id="m3HeightInput" type="number" min="1" value="10" />
+              </label>
+            </div>
+
+            <div class="field-grid">
+              <label>
+                <span>Uzunluk (m)</span>
+                <input id="m3LengthInput" type="number" min="0.1" step="0.1" value="3" />
+              </label>
+              <label>
+                <span>Bu ölçü için fiyat (TL)</span>
+                <input id="m3UnitPriceInput" type="number" min="0" step="10" value="0" />
+              </label>
+            </div>
+
+            <div class="m3-result-box">
+              <div class="m3-result-row">
+                <span>Hacim</span>
+                <strong id="m3VolumeText">0.03 m3</strong>
+              </div>
+              <div class="m3-result-row accent">
+                <span>Bu ölçü toplam fiyatı</span>
+                <strong id="m3TotalText">₺ 0</strong>
+              </div>
+              <div class="m3-result-row">
+                <span>m3 eşdeğeri</span>
+                <strong id="m3PriceText">₺ 0</strong>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="cartView" class="view">
+          <div class="panel cart-panel">
+            <div class="section-header">
+              <h2>Sepet</h2>
+              <span class="badge" id="cartCountBadge">0 ürün</span>
+            </div>
+            <div id="cartList" class="cart-list"></div>
+            <div class="totals">
+              <span>Toplam tutar</span>
+              <strong id="cartTotal">0 TL</strong>
+            </div>
+          </div>
+        </section>
+
+        <section id="projectView" class="view">
+          <div class="panel">
+            <div class="section-header">
+              <h2>Projeler</h2>
+            </div>
+
+            <div class="project-create-box">
+              <input id="projectNameInput" type="text" placeholder="Proje adı" />
+              <button id="projectCreateBtn" class="primary-btn secondary-inline" type="button">Proje oluştur</button>
+            </div>
+
+            <div class="settings-group">
+              <h3>Ahşap ekle</h3>
+
+              <div class="project-size-selector" aria-label="Standart ölçüler">
+                <button type="button" class="project-size-pill is-selected" data-project-size="10x10x2">10x10 / 2m</button>
+                <button type="button" class="project-size-pill" data-project-size="5x10x2">5x10 / 2m</button>
+                <button type="button" class="project-size-pill" data-project-size="5x5x2">5x5 / 2m</button>
+                <button type="button" class="project-size-pill" data-project-size="2x8x2">2x8 / 2m</button>
+                <button type="button" class="project-size-pill project-custom-pill" data-project-size="custom">Özel ölçü</button>
+              </div>
+
+              <div class="field-grid">
+                <label>
+                  <span>Malzeme adı</span>
+                  <input id="projectMaterialNameInput" type="text" placeholder="10x10 / 2m" />
+                </label>
+                <label>
+                  <span>Adet</span>
+                  <input id="projectQtyInput" type="number" min="1" value="1" />
+                </label>
+              </div>
+              <div class="field-grid">
+                <label>
+                  <span>En (cm)</span>
+                  <input id="projectWidthInput" type="number" min="1" value="10" />
+                </label>
+                <label>
+                  <span>Boy (cm)</span>
+                  <input id="projectHeightInput" type="number" min="1" value="10" />
+                </label>
+              </div>
+              <div class="field-grid single-column">
+                <label>
+                  <span>Uzunluk (m)</span>
+                  <input id="projectLengthInput" type="number" min="0.1" step="0.1" value="2" />
+                </label>
+              </div>
+              <button id="addProjectMaterialBtn" class="primary-btn secondary-inline" type="button">Ahşap ekle</button>
+            </div>
+
+            <div id="projectList" class="project-list"></div>
+          </div>
+        </section>
+
+        <section id="settingsView" class="view">
+          <div class="panel settings-panel">
+            <div class="section-header">
+              <h2>Ayarlar</h2>
+            </div>
+
+            <div class="settings-group">
+              <label>
+                <span>m3 fiyatı (aktif)</span>
+                <input id="m3PriceInput" type="number" min="0" step="10" value="1800" />
+              </label>
+              <label>
+                <span>Varsayılan m3 fiyatı</span>
+                <input id="defaultM3PriceInput" type="number" min="0" step="10" value="1800" />
+              </label>
+              <button id="resetM3PriceBtn" class="secondary-btn" type="button">Varsayılana dön</button>
+              <label>
+                <span>Para birimi</span>
+                <select id="currencySelect">
+                  <option value="TRY" selected>TL</option>
+                  <option value="USD">USD</option>
+                  <option value="EUR">EUR</option>
+                </select>
+              </label>
+              <label class="checkbox-row">
+                <input id="taxToggle" type="checkbox" />
+                <span>KDV dahil</span>
+              </label>
+            </div>
+
+            <div class="settings-group">
+              <h3>Firmalar</h3>
+              <div class="supplier-form">
+                <label>
+                  <span>Firma adı</span>
+                  <input id="supplierNameInput" type="text" placeholder="Ör. ABC Kereste" />
+                </label>
+                <label>
+                  <span>m3 fiyatı</span>
+                  <input id="supplierPriceInput" type="number" min="0" step="10" placeholder="1800" />
+                </label>
+                <button id="addSupplierBtn" class="primary-btn secondary-inline" type="button">Fiyat kaydet</button>
+              </div>
+              <div id="supplierList" class="supplier-list"></div>
+            </div>
+
+            <div class="settings-group">
+              <h3>Katsayılar</h3>
+              <div class="ratio-grid">
+                <label>
+                  <span>10x10 / 2m (%100)</span>
+                  <input id="ratio10x10" type="number" step="0.05" value="1" />
+                </label>
+                <label>
+                  <span>5x10 / 2m</span>
+                  <input id="ratio5x10" type="number" step="0.05" value="0.5" />
+                </label>
+                <label>
+                  <span>5x5 / 2m</span>
+                  <input id="ratio5x5" type="number" step="0.05" value="0.25" />
+                </label>
+                <label>
+                  <span>2x8 / 2m</span>
+                  <input id="ratio2x8" type="number" step="0.05" value="0.15" />
+                </label>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
